@@ -14,6 +14,9 @@
 # define MINIRT_H
 
 #include <mlx.h>
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 typedef struct  data
 {
@@ -23,8 +26,8 @@ typedef struct  data
 	int         line_length;
 	int         endian;
 }               t_data;
-
-typedef struct	centre cen
+/*
+typedef struct	centre
 {
 	float	x;
 	float	y;
@@ -67,7 +70,10 @@ typedef struct	resol
 	float	y;
 }				t_resol;
 
-
+*/
 int 	main(void);
+void 	look_at(float forward_x, float forward_y, float forward_z, float **matrix);
+int		count_t(float norm_i, float norm_j, float norm_z, float x1, float y1, float z1, float R);
+int		make_sphere(void *mlx, void *win, t_data img);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 #endif

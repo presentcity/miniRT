@@ -69,7 +69,7 @@ void		rearrange_rgb(t_vector *color)
 	color->z = (color->z < 0) ? 0 : color->z;
 }
 
-*/
+
 t_struct	init_vect(void)
 {
 	t_struct	vector;
@@ -98,7 +98,7 @@ t_struct	init_sphere(void)
 	sphere.r = 0;
 	sphere.g = 0;
 	sphere.b = 0;
-}	
+}	*/
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -108,38 +108,108 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-
-int		make_sphere(img)
+void 	look_at(float forward_x, float forward_y, float forward_z, float **matrix)
 {
-	float x1 = 99;
-	float y1 = 74;
-	float z1 = 1;
-	float R = 17;
-	float t = 0;
+	float right_x;
+	float right_y;
+	float right_z;
+	float tmp_x = 0;
+	float tmp_y = 1;
+	float tmp_z = 0;
+	float up_x, up_y, up_z;
+	int j = 0;
+
+
+	matrix = malloc(sizeof(float *) * 3);
+	while (j <= 2)
+	{
+		matrix[j] = malloc(sizeof(float) * 3);
+		j++;
+	}
+
+	right_x = forward_y * tmp_z - forward_z * tmp_y;
+	right_y = forward_z * tmp_x - forward_x * tmp_z;
+	right_z = forward_x * tmp_y - forward_y * tmp_x;
+
+	up_x = forward_y * right_z - forward_z * right_y;
+	up_y = forward_z * right_x - forward_x * right_z;
+	up_z = forward_x * right_y - forward_y * right_x;
+
+	matrix[0][0] = right_x;
+	matrix[0][1] = right_y;
+	matrix[0][2] = right_z;
+	matrix[1][0] = up_x;
+	matrix[1][1] = up_y;
+	matrix[1][2] = up_z;
+	matrix[2][0] = forward_x;
+	matrix[2][1] = forward_y;
+	matrix[2][2] = forward_y;
+}
+
+int		count_t(float norm_i, float norm_j, float norm_z, float x1, float y1, float z1, float R)
+{
 	float t1;
 	float t2;
 	float k1;
 	float k2;
 	float k3;
 	float discr;
+	float t = 0;
+
+	k1 = sqrt(pow(norm_i,2) + pow(norm_j,2) + pow(norm_z,2));
+	k2 = 2 * sqrt(x1 * norm_i + y1 * norm_j + z1 * norm_z);
+	k3 = sqrt(pow(x1,2) + pow(y1,2) + pow(z1,2)) - pow(R,2);
+	discr = pow(k2,2) - 4 * k1 * k3;
+	if (discr >= 0)
+	{
+		t1 = -2 * k2 + sqrt(pow(k2, 2) - 4 * k1 * k3);
+		t2 = -2 * k2 - sqrt(pow(k2, 2) - 4 * k1 * k3);
+
+		t = t1 < t2 ? t1 : t2;
+		if ( t > 1 )
+			return (t);
+		else
+			return(-1);
+	}
+	else
+		return(-1);
+}
+
+int		make_sphere(void *mlx, void *win, t_data img)
+{
+	float x1 = 99;
+	float y1 = 74;
+	float z1 = 1;
+	float R = 17;
 	float Vw;
 	float Vh;
 	float fov;
-	float i;
-	float j;
+	int i;
+	int j;
 	float scene_i;
 	float scene_j;
-	float scene_z;
+	float scene_z = -1;
+	float t;
+	float forward_x = 0;
+	float forward_y = 0;
+	float forward_z = 1;
+	float **matrix;
+	int pix_x, pix_y = 0;
 
 	i = 0;
 	j = 0;
 	fov = 70;
-	Vw = 2 * tg(fov/2);
+	Vw = 2 * tan(fov/2);
 	Vh = Vw;
-	pow((x - x1),2) + pow((y - y1),2) + pow((z - z1),2) - pow(R,2);
-	while (j < 1080)
+	matrix = malloc(sizeof(float *) * 3);
+	while (j <= 2)
 	{
-		while (i < 1920)
+		matrix[j] = malloc(sizeof(float) * 3);
+		j++;
+	}
+	while (pix_y < 1080)
+	{
+		while (pix_x < 1920)
 		{
 			if (i < 960)
 				scene_i = i - 960;
@@ -149,29 +219,42 @@ int		make_sphere(img)
 				scene_j = 540 - j;
 			else
 				scene_j = j - 540;
-			scene_i = scene_i * Vw/1920;
-			scene_j = scene_j * Vh/1080;
-			k1 = sqrt(pow(scene_i,2) + pow(scene_j,2) + 1); // умножаем вектор D на вектор D
-			k2 = 2 * sqrt(x1 * scene_i + y1 * scene_j + 1); // Умножаем OС на D на вектор D и на 2
-			k3 = sqrt(pow(x1,2) + pow(y1,2) + pow(z1,2)) - pow(R,2); //умножаем вектор OC на вектор OC
-			discr = pow(k2,2) - 4 * k1 * k3;
-			if (discr >= 0)
+			scene_i *= Vw/1920;
+			scene_j *= Vh/1080;
+			look_at(forward_x, forward_y, forward_z, matrix);
+			while (j < 1 && i <= 2)
 			{
-				t1 = -2 * k2 + sqrt(pow(k2,2) - 4 * k1 * k3);
-				if (discr == 0)
-					break ;
-				t2 = -2 * k2 - sqrt(pow(k2,2) - 4 * k1 * k3);
+				scene_i *= matrix[j][i];
+				i++;
 			}
+			i = 0;
+			j++;
+			while (j < 2)
+			{
+				scene_j *= matrix[j][i];
+				i++;
+			}
+			i = 0;
+			j++;
+			while (j == 2)
+			{
+				scene_z *= matrix[j][i];
+				i++;
+			}
+			t = count_t(scene_i, scene_j, scene_z, x1, y1, z1, R);
 			i++;
 		}
-		i = 0;
-		j++;
-		t = t1 < t2 ? t1 : t2;
-		if (t)
-			my_mlx_pixel_put(&img, i, j, 0x00FF0000);
+		pix_x = 0;
+		pix_y++;
+		if (t > 1)
+		{
+			my_mlx_pixel_put(&img, pix_x, pix_y, 0x00FF0000);
+			mlx_put_image_to_window(mlx, win, img.img, pix_x, pix_y);
+		}
 	}
 	return(1);
 }
+
 
 //pow((sphere->x - sphere->centre->x),2) + pow((sphere->y - sphere->centre->y),2) + pow((sphere->z - sphere->centre->z),2) - pow(sphere->R,2); // уравнение сферы радиуса R с центром в t_sphere->centre(С)
 
@@ -180,15 +263,11 @@ int 	main(void)
 	void *mlx;
 	void *win;
 	t_data  img;
-	int i;
-	int j;
 	float t;
-	t_camera *camera;
-	t_sphere *sphere;
-	t_resol *resol;
+	//t_camera *camera;
+	//t_sphere *sphere;
+	//t_resol *resol;
 
-	i = 0;
-	j = 0;
 	t = 0;
 //	if (argc < 2 || argc > 3)
 //		printf_error;
@@ -199,55 +278,7 @@ int 	main(void)
 		&img.line_length, &img.endian);
 	if (win == 0)
 		mlx_destroy_window(mlx, win);
-	while (vector->x < 960)
-	{
-		vector->z = 1;
-		while(vector->y < 540)
-		{
-			vector = t * vector;
-			vector->new_x = t * vector->x;
-			sqrt(vector1->x * vector2->x + vector1->y * vector2->y + vector1->z * vector2->z) - r = vector(t*vector->x. t*y. t*z);
-			(vector->y)++;
-		}
-		vector->y = 0;
-		(vector->x)++;
-	}
-	/*
-	k1 = sqrt(vectorD->x * vectorD->x + vectorD->y * vectorD->y + vectorD->z * vectorD->z); // умножаем вектор D на вектор D
-	k2 = 2 * sqrt(sphere->centre->x * vectorD->x + sphere->centre->y * vectorD->y + sphere->centre->z * vectorD->z); // Умножаем OС на D на вектор D и на 2
-	k3 = sqrt(sphere->centre->x * sphere->centre->x + sphere->centre->y * sphere->centre->y + sphere->centre->z * sphere->centre->z) - pow(sphere->R,2); //умножаем вектор OC на вектор OC
-	discr = pow(k2,2) - 4 * k1 * k3;
-	if (discr >= 0)
-	{
-		t1 = -2 * k2 + sqrt(pow(k2,2) - 4 * k1 * k3);
-		if (discr == 0)
-			break ;
-		t2 = -2 * k2 - sqrt(pow(k2,2) - 4 * k1 * k3);
-		return(t1 < t2 ? t1 : t2);
-	} 
-	return(NULL);
-	// if discr < 0, пересечения нет, а сферы значит тоже нет. 
-	while (discr >= 0 && )
-	{
-		t = check_pix(t_sphere, vectorD);
-		x = vectorD->x * t;
-		y = vectorD->y * t;
-		if (t)
-			my_mlx_pixel_put(&img, x, y, 0x00FF0000);
-	}
-*/
-	if (n == c)
-	while (i < 99)
-	{
-		while (j < 99)
-		{
+	make_sphere(mlx, win, img);
 
-			my_mlx_pixel_put(&img, i, j, 0x00FF0000);
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-	mlx_put_image_to_window(mlx, win, img.img, 0, 0);
 	mlx_loop(mlx);
 }
