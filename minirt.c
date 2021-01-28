@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pdrake <pdrake@student.42.fr>              +#+  +:+       +#+        */
+/*   By: presentcity <presentcity@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/12 14:18:19 by pdrake            #+#    #+#             */
-/*   Updated: 2021/01/25 19:50:33 by pdrake           ###   ########.fr       */
+/*   Updated: 2021/01/28 19:52:13 by presentcity      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,37 +211,37 @@ int		make_sphere(void *mlx, void *win, t_data img)
 	{
 		while (pix_x < 1920)
 		{
-			if (i < 960)
-				scene_i = i - 960;
+			if (pix_y < 960)
+				scene_i = pix_x - 960;
 			else
-				scene_i = 960 - i;
+				scene_i = 960 - pix_x;
 			if (j > 540)
-				scene_j = 540 - j;
+				scene_j = 540 - pix_y;
 			else
-				scene_j = j - 540;
+				scene_j = pix_y - 540;
 			scene_i *= Vw/1920;
 			scene_j *= Vh/1080;
-			look_at(forward_x, forward_y, forward_z, matrix);
-			while (j < 1 && i <= 2)
+			look_at(forward_x, forward_y, forward_z, matrix); //делаем матрицу
+			while (j < 1 && i <= 2) //каждый элемент вектора перемножаем на соответствующий элемент матрицы
 			{
 				scene_i *= matrix[j][i];
 				i++;
 			}
 			i = 0;
 			j++;
-			while (j < 2)
+			while (j < 2 && i <= 2)
 			{
 				scene_j *= matrix[j][i];
 				i++;
 			}
 			i = 0;
 			j++;
-			while (j == 2)
+			while (j == 2 && i <= 2)
 			{
 				scene_z *= matrix[j][i];
 				i++;
 			}
-			t = count_t(scene_i, scene_j, scene_z, x1, y1, z1, R);
+			t = count_t(scene_i, scene_j, scene_z, x1, y1, z1, R); //находим точки пересечения графика луча и сферы
 			i++;
 		}
 		pix_x = 0;
@@ -249,7 +249,7 @@ int		make_sphere(void *mlx, void *win, t_data img)
 		if (t > 1)
 		{
 			my_mlx_pixel_put(&img, pix_x, pix_y, 0x00FF0000);
-			mlx_put_image_to_window(mlx, win, img.img, pix_x, pix_y);
+			mlx_put_image_to_window(mlx, win, img.img, 0, 0);
 		}
 	}
 	return(1);
