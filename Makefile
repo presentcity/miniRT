@@ -22,7 +22,7 @@ NAME 	= miniRT
 CC		= gcc
 RM 		= rm -f
 
-CFLAGS 	= -Wall -Wextra -Werror
+CFLAGS 	= -Wall -Wextra -Werror -I$(MLX_PATH)
 
 .c.o:
 				${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
@@ -37,7 +37,7 @@ all:			${NAME}
 
 debug: ${SRC}
 	$(MAKE) -C $(LIBFT)
-	$(CC) -Ilibft -Llibft -lft $(CFALGS) -g $(SRC) -o debug
+	$(CC) -Ilibft -Llibft -lft $(CFLAGS) -g $(SRC) -o debug -L$(MLX_PATH) -lmlx
 clean:
 				${RM} ${OBJ}
 

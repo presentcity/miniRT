@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: presentcity <presentcity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pdrake <pdrake@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/12 14:18:19 by pdrake            #+#    #+#             */
-/*   Updated: 2021/01/28 19:52:13 by presentcity      ###   ########.fr       */
+/*   Updated: 2021/01/25 19:50:33 by pdrake           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_vector	*color_to_rgb(unsigned int color)
     blue = (int)(color % 256);
     green = (int)(((color - blue) / 256) % 256);
     red = (int)(((color - blue) / (256 * 256)) - green / 256);
-    return (new_vector((float)red, (float)green, (float)blue));
+    return (new_vector((double)red, (double)green, (double)blue));
 }
 
 int			rgb_to_color(t_vector *rgb)
@@ -69,36 +69,57 @@ void		rearrange_rgb(t_vector *color)
 	color->z = (color->z < 0) ? 0 : color->z;
 }
 
-
-t_struct	init_vect(void)
+*/
+t_vec3f		init_vect(void)
 {
-	t_struct	vector;
+	t_vec3f	vec;
 	
-	vector.x = 0.0;
-	vector.y = 0.0;
-	vector.z = 0.0;
+	vec.x = 0.0;
+	vec.y = 0.0;
+	vec.z = 0.0;
+	return(vec);
 }
 
-t_struct		init_resol(void)
+t_resol		init_resol(void)
 {
-	t_struct	resol;
-	resol.x = 1920; // изначально ноль
-	resol.y = 1080; //изначально ноль
+	t_resol		resol;
+
+	resol.x = 1920;
+	resol.y = 1080;
+	return(resol);
 }
 
-t_struct	init_sphere(void)
+t_camera	init_camera(void)
 {
-	t_struct	sphere;
+	t_camera	camera;
+
+	camera.loc.x = 0.0;
+	camera.loc.y = 0.0;
+	camera.loc.z = 1.0;
+	camera.fov = 80.0;
+	camera.iratio = 0.0;
+	return(camera);
+}
+
+t_sphere	init_sphere(void)
+{
+	t_sphere	sphere;
 	
 	sphere.x = 0.0;
 	sphere.y = 0.0;
 	sphere.z = 0.0;
-	sphere.R = 0.0;
-	sphere.diam = 0.0;
+	sphere.scene.x = 0.0;
+	sphere.scene.y = 0.0;
+	sphere.scene.z = 1;
+	sphere.norm.x = 0.0;
+	sphere.norm.y = 0.0;
+	sphere.norm.z = 0.0;
+	sphere.R = 0.1;
 	sphere.r = 0;
 	sphere.g = 0;
 	sphere.b = 0;
-}	*/
+	return(sphere);
+}
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -108,28 +129,19 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void 	look_at(float forward_x, float forward_y, float forward_z, float **matrix)
+void 	look_at(double forward_x, double forward_y, double forward_z, double **matrix)
 {
-	float right_x;
-	float right_y;
-	float right_z;
-	float tmp_x = 0;
-	float tmp_y = 1;
-	float tmp_z = 0;
-	float up_x, up_y, up_z;
-	int j = 0;
+	double right_x;
+	double right_y;
+	double right_z;
+	double tmp_x = 0;
+	double tmp_y = 1;
+	double tmp_z = 0;
+	double up_x, up_y, up_z;
 
-
-	matrix = malloc(sizeof(float *) * 3);
-	while (j <= 2)
-	{
-		matrix[j] = malloc(sizeof(float) * 3);
-		j++;
-	}
-
-	right_x = forward_y * tmp_z - forward_z * tmp_y;
-	right_y = forward_z * tmp_x - forward_x * tmp_z;
-	right_z = forward_x * tmp_y - forward_y * tmp_x;
+	right_x = tmp_y * forward_z - tmp_z * forward_y;
+	right_y = tmp_z * forward_x - tmp_x * forward_z;
+	right_z = tmp_x * forward_y - tmp_y * forward_x;
 
 	up_x = forward_y * right_z - forward_z * right_y;
 	up_y = forward_z * right_x - forward_x * right_z;
@@ -143,142 +155,120 @@ void 	look_at(float forward_x, float forward_y, float forward_z, float **matrix)
 	matrix[1][2] = up_z;
 	matrix[2][0] = forward_x;
 	matrix[2][1] = forward_y;
-	matrix[2][2] = forward_y;
+	matrix[2][2] = forward_z;
 }
 
-int		count_t(float norm_i, float norm_j, float norm_z, float x1, float y1, float z1, float R)
+double		count_t(t_sphere *sphere, t_camera *cam)
 {
-	float t1;
-	float t2;
-	float k1;
-	float k2;
-	float k3;
-	float discr;
-	float t = 0;
+	double t1;
+	double t2;
+	double t;
+	double tca;
+	double d2;
+	double thc;
 
-	k1 = sqrt(pow(norm_i,2) + pow(norm_j,2) + pow(norm_z,2));
-	k2 = 2 * sqrt(x1 * norm_i + y1 * norm_j + z1 * norm_z);
-	k3 = sqrt(pow(x1,2) + pow(y1,2) + pow(z1,2)) - pow(R,2);
-	discr = pow(k2,2) - 4 * k1 * k3;
-	if (discr >= 0)
-	{
-		t1 = -2 * k2 + sqrt(pow(k2, 2) - 4 * k1 * k3);
-		t2 = -2 * k2 - sqrt(pow(k2, 2) - 4 * k1 * k3);
-
+	tca = (sphere->x - cam->loc.x) * sphere->norm.x + (sphere->y - cam->loc.y) * sphere->norm.y + (sphere->z - cam->loc.z) * sphere->norm.z;  // скалярное произведение векторов;
+	if (tca < 0)
+		return (-1);
+	d2 = (pow((sphere->x - cam->loc.x),2) + pow((sphere->y - cam->loc.y),2) + pow((sphere->z - cam->loc.z),2)) - pow(tca,2);
+	if (d2 > pow(sphere->R,2))
+		return -1;
+	thc = sqrt(pow(sphere->R,2) - d2);
+	t1 = tca - thc;
+	t2 = tca + thc;
+	if (t1 < 0 && t2 < 0)
+		return -1;
+	if (t1 > 0 && t2 > 0)
 		t = t1 < t2 ? t1 : t2;
-		if ( t > 1 )
-			return (t);
-		else
-			return(-1);
-	}
 	else
-		return(-1);
+		t = t1 < t2 ? t2 : t1;
+	return (t);
 }
 
-int		make_sphere(void *mlx, void *win, t_data img)
+int		make_sphere(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 {
-	float x1 = 99;
-	float y1 = 74;
-	float z1 = 1;
-	float R = 17;
-	float Vw;
-	float Vh;
-	float fov;
-	int i;
+	double Vw;
 	int j;
-	float scene_i;
-	float scene_j;
-	float scene_z = -1;
-	float t;
-	float forward_x = 0;
-	float forward_y = 0;
-	float forward_z = 1;
-	float **matrix;
-	int pix_x, pix_y = 0;
+	double t;
+	double forward_x = 0;
+	double forward_y = 0;
+	double forward_z = -1;
+	double **matrix;
+	int pix_x = 0, pix_y = 0;
 
-	i = 0;
 	j = 0;
-	fov = 70;
-	Vw = 2 * tan(fov/2);
-	Vh = Vw;
-	matrix = malloc(sizeof(float *) * 3);
+	Vw = 2 * tan(cam->fov/2 * M_PI/180);
+	matrix = malloc(sizeof(double *) * 3);
 	while (j <= 2)
 	{
-		matrix[j] = malloc(sizeof(float) * 3);
+		matrix[j] = malloc(sizeof(double) * 3);
 		j++;
 	}
-	while (pix_y < 1080)
+	while (pix_y < resol->y)
 	{
-		while (pix_x < 1920)
-		{
-			if (pix_y < 960)
-				scene_i = pix_x - 960;
+		while (pix_x < resol->x)
+		{/*
+			if (pix_x < resol->x / 2)
+				sphere->scene.x = pix_x - resol->x / 2;
 			else
-				scene_i = 960 - pix_x;
-			if (j > 540)
-				scene_j = 540 - pix_y;
+				sphere->scene.x = resol->x / 2 - pix_x;
+			if (pix_y > resol->y / 2)
+				sphere->scene.y = resol->y / 2 - pix_y;
 			else
-				scene_j = pix_y - 540;
-			scene_i *= Vw/1920;
-			scene_j *= Vh/1080;
-			look_at(forward_x, forward_y, forward_z, matrix); //делаем матрицу
-			while (j < 1 && i <= 2) //каждый элемент вектора перемножаем на соответствующий элемент матрицы
-			{
-				scene_i *= matrix[j][i];
-				i++;
-			}
-			i = 0;
-			j++;
-			while (j < 2 && i <= 2)
-			{
-				scene_j *= matrix[j][i];
-				i++;
-			}
-			i = 0;
-			j++;
-			while (j == 2 && i <= 2)
-			{
-				scene_z *= matrix[j][i];
-				i++;
-			}
-			t = count_t(scene_i, scene_j, scene_z, x1, y1, z1, R); //находим точки пересечения графика луча и сферы
-			i++;
+				sphere->scene.y = pix_y - resol->y / 2;
+			sphere->scene.x *= Vw/resol->x * (resol->x / resol->y);
+			sphere->scene.y *= Vw/resol->y;*/
+			pix_x = resol->x / 2 - 1;
+			pix_y = resol->y / 2 -1;
+			cam->iratio = resol->x / resol->y;
+			sphere->scene.x = (2 * ((pix_x + 0.5) / resol->x) - 1) * tan(cam->fov / 2 * M_PI / 180) * cam->iratio;
+			sphere->scene.y = (1 - 2 * ((pix_y + 0.5) / resol->y) * tan(cam->fov / 2 * M_PI / 180));
+			look_at(forward_x, forward_y, forward_z, matrix);
+			sphere->norm.x = sphere->scene.x * matrix[0][0] + sphere->scene.y * matrix[1][0] + sphere->scene.z * matrix[2][0] - cam->loc.x;
+			sphere->norm.y = sphere->scene.x * matrix[0][1] + sphere->scene.y * matrix[1][1] + sphere->scene.z * matrix[2][1] - cam->loc.y;
+			sphere->norm.z = sphere->scene.x * matrix[0][2] + sphere->scene.y * matrix[1][2] + sphere->scene.z * matrix[2][2] - cam->loc.z;
+			sphere->norm.x *= 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
+			sphere->norm.y *= 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
+			sphere->norm.z *= 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
+			t = count_t(sphere, cam);
+			if (t >= 0)
+				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
+			pix_x++;
 		}
 		pix_x = 0;
 		pix_y++;
-		if (t > 1)
-		{
-			my_mlx_pixel_put(&img, pix_x, pix_y, 0x00FF0000);
-			mlx_put_image_to_window(mlx, win, img.img, 0, 0);
-		}
 	}
 	return(1);
 }
-
-
-//pow((sphere->x - sphere->centre->x),2) + pow((sphere->y - sphere->centre->y),2) + pow((sphere->z - sphere->centre->z),2) - pow(sphere->R,2); // уравнение сферы радиуса R с центром в t_sphere->centre(С)
 
 int 	main(void)
 {
 	void *mlx;
 	void *win;
 	t_data  img;
-	float t;
-	//t_camera *camera;
-	//t_sphere *sphere;
-	//t_resol *resol;
+	t_sphere	sphere;
+	t_camera	cam;
+	t_resol		resol;
+	t_vec3f		vec;
 
-	t = 0;
-//	if (argc < 2 || argc > 3)
+	sphere = init_sphere();
+	cam = init_camera();
+	resol = init_resol();
+	vec = init_vect();
+	//	if (argc < 2 || argc > 3)
 //		printf_error;
+
+// k1 = sqrt(vectorD->x * vectorD->x + vectorD->y * vectorD->y + vectorD->z * vectorD->z); // умножаем вектор D на вектор D
+//    k2 = 2 * sqrt(t_sphere->centre->x * vectorD->x + t_sphere->centre->y * vectorD->y + t_sphere->centre->z * vectorD->z); // Умножаем OС на D на вектор D и на 2
+//    k3 = sqrt(t_sphere->centre->x * t_sphere->centre->x + t_sphere->centre->y * t_sphere->centre->y + t_sphere->centre->z * t_sphere->centre->z) - pow(t_sphere->R,2); //умножаем вектор OC на вектор
 	mlx = mlx_init();
-	win = mlx_new_window(mlx, 1920, 1080, "How do you do, fellow kids?");
-	img.img = mlx_new_image(mlx, 1920, 1080);
+	win = mlx_new_window(mlx, resol.x, resol.y, "How do you do, fellow kids?");
+	img.img = mlx_new_image(mlx, resol.x, resol.y);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 		&img.line_length, &img.endian);
 	if (win == 0)
 		mlx_destroy_window(mlx, win);
-	make_sphere(mlx, win, img);
-
+	make_sphere(&img, &sphere, &cam, &resol);
+	mlx_put_image_to_window(mlx, win, img.img, 0, 0);
 	mlx_loop(mlx);
 }

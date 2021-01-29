@@ -29,51 +29,67 @@ typedef struct  data
 /*
 typedef struct	centre
 {
-	float	x;
-	float	y;
-	float	z;
+	double	x;
+	double	y;
+	double	z;
 }				t_centre;
-
-typedef struct  sphere
+*/
+typedef struct	s_scene
 {
-	struct	centre;
-	float	x;
-	float	y;
-	float	z;
-	float	R;
-	float	diam;
+	double	x;
+	double	y;
+	double	z;
+}				t_scene;
+
+typedef struct	s_norm
+{
+	double	x;
+	double	y;
+	double	z;
+}				t_norm;
+
+typedef struct  s_sphere
+{
+	t_scene scene;
+	t_norm	norm;
+	double	x;
+	double	y;
+	double	z;
+	double	R;
 	int		r;
 	int		g;
 	int		b;
 }				t_sphere;
 
-typedef	struct	s_nov;
+typedef struct	s_vec3f
 {
-	float	x;
-	float	y;
-	float	z;	
-}				t_nov;
+	double	x;
+	double	y;
+	double	z;
+}				t_vec3f;
 
-typedef struct	camera
+typedef struct	s_camera
 {
-	float	x;
-	float	y;
-	float	z;
-	float	nov.x;
-	float	nov.y;
-	float	nov.z;
+	t_vec3f	loc;
+	double	fov;
+	double	iratio;
 }				t_camera;
 
-typedef struct	resol
+typedef struct	s_resol
 {
-	float	x;
-	float	y;
+	double	x;
+	double	y;
 }				t_resol;
 
-*/
+
+
 int 	main(void);
-void 	look_at(float forward_x, float forward_y, float forward_z, float **matrix);
-int		count_t(float norm_i, float norm_j, float norm_z, float x1, float y1, float z1, float R);
-int		make_sphere(void *mlx, void *win, t_data img);
+void 	look_at(double forward_x, double forward_y, double forward_z, double **matrix);
+double	count_t(t_sphere *sphere, t_camera *cam);
+t_sphere	init_sphere(void);
+t_camera	init_camera(void);
+t_resol		init_resol(void);
+t_vec3f		init_vect(void);
+int		make_sphere(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 #endif
