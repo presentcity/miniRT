@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pdrake <pdrake@student.42.fr>              +#+  +:+       +#+        */
+/*   By: presentcity <presentcity@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/12 14:18:19 by pdrake            #+#    #+#             */
-/*   Updated: 2021/01/25 19:50:33 by pdrake           ###   ########.fr       */
+/*   Updated: 2021/01/29 22:52:55 by presentcity      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ t_sphere	init_sphere(void)
 	
 	sphere.x = 0.0;
 	sphere.y = 0.0;
-	sphere.z = 0.0;
+	sphere.z = 0.3;
 	sphere.scene.x = 0.0;
 	sphere.scene.y = 0.0;
 	sphere.scene.z = 1;
@@ -218,8 +218,6 @@ int		make_sphere(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 				sphere->scene.y = pix_y - resol->y / 2;
 			sphere->scene.x *= Vw/resol->x * (resol->x / resol->y);
 			sphere->scene.y *= Vw/resol->y;*/
-			pix_x = resol->x / 2 - 1;
-			pix_y = resol->y / 2 -1;
 			cam->iratio = resol->x / resol->y;
 			sphere->scene.x = (2 * ((pix_x + 0.5) / resol->x) - 1) * tan(cam->fov / 2 * M_PI / 180) * cam->iratio;
 			sphere->scene.y = (1 - 2 * ((pix_y + 0.5) / resol->y) * tan(cam->fov / 2 * M_PI / 180));
