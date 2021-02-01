@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: presentcity <presentcity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pdrake <pdrake@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/12 14:18:19 by pdrake            #+#    #+#             */
-/*   Updated: 2021/01/29 22:52:55 by presentcity      ###   ########.fr       */
+/*   Updated: 2021/01/25 19:50:33 by pdrake           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,56 +70,18 @@ void		rearrange_rgb(t_vector *color)
 }
 
 */
-t_vec3f		init_vect(void)
+/*bool intersectPlane(const Vec3f &n, const Vec3f &p0, const Vec3f &l0, const Vec3f &l, float &t)
 {
-	t_vec3f	vec;
-	
-	vec.x = 0.0;
-	vec.y = 0.0;
-	vec.z = 0.0;
-	return(vec);
+// assuming vectors are all normalized
+float denom = dotProduct(n, l);
+if (denom > 1e-6) {
+Vec3f p0l0 = p0 - l0;
+t = dotProduct(p0l0, n) / denom;
+return (t >= 0);
 }
 
-t_resol		init_resol(void)
-{
-	t_resol		resol;
-
-	resol.x = 1920;
-	resol.y = 1080;
-	return(resol);
-}
-
-t_camera	init_camera(void)
-{
-	t_camera	camera;
-
-	camera.loc.x = 0.0;
-	camera.loc.y = 0.0;
-	camera.loc.z = 1.0;
-	camera.fov = 80.0;
-	camera.iratio = 0.0;
-	return(camera);
-}
-
-t_sphere	init_sphere(void)
-{
-	t_sphere	sphere;
-	
-	sphere.x = 0.0;
-	sphere.y = 0.0;
-	sphere.z = 0.3;
-	sphere.scene.x = 0.0;
-	sphere.scene.y = 0.0;
-	sphere.scene.z = 1;
-	sphere.norm.x = 0.0;
-	sphere.norm.y = 0.0;
-	sphere.norm.z = 0.0;
-	sphere.R = 0.1;
-	sphere.r = 0;
-	sphere.g = 0;
-	sphere.b = 0;
-	return(sphere);
-}
+return false;
+}*/
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -129,33 +91,52 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void 	look_at(double forward_x, double forward_y, double forward_z, double **matrix)
+t_plane		init_plane(void)
 {
-	double right_x;
-	double right_y;
-	double right_z;
-	double tmp_x = 0;
-	double tmp_y = 1;
-	double tmp_z = 0;
-	double up_x, up_y, up_z;
+	t_plane		plane;
 
-	right_x = tmp_y * forward_z - tmp_z * forward_y;
-	right_y = tmp_z * forward_x - tmp_x * forward_z;
-	right_z = tmp_x * forward_y - tmp_y * forward_x;
+	plane.n.x = 0.0;
+	plane.n.y = 0.0;
+	plane.n.z = 1.0;
+	plane.p0.x = 0.0;
+	plane.p0.y = 0.0;
+	plane.p0.z = -10.0;
+	return(plane);
+}
 
-	up_x = forward_y * right_z - forward_z * right_y;
-	up_y = forward_z * right_x - forward_x * right_z;
-	up_z = forward_x * right_y - forward_y * right_x;
+int 		make_plane(t_sphere *sphere, t_camera *cam)
+{
+	double denom;
+	double t;
+	t_plane		plane;
+	t_vec3f dif;
 
-	matrix[0][0] = right_x;
-	matrix[0][1] = right_y;
-	matrix[0][2] = right_z;
-	matrix[1][0] = up_x;
-	matrix[1][1] = up_y;
-	matrix[1][2] = up_z;
-	matrix[2][0] = forward_x;
-	matrix[2][1] = forward_y;
-	matrix[2][2] = forward_z;
+	plane = init_plane();
+	dif = vec_dif(plane.p0, cam->loc);
+	denom = dotproduct(vec_dif(plane.n, cam->loc), sphere->norm);
+	if (denom > 1e-6)
+	{
+		t = dotproduct(dif, plane.n) / denom;
+		return (t >= 0);
+	}
+	return(-1);
+}
+
+void 	look_at(double **matrix)
+{
+	t_vec3f right;
+	t_vec3f tmp;
+	t_vec3f up;
+	t_vec3f forward;
+
+	tmp.y = 1;
+	forward.z = -1;
+	right = matrix_mult(tmp, forward);
+	up = matrix_mult(forward, right);
+
+	matrix[0] = right
+	matrix[1] = up;
+	matrix[2] = forward;
 }
 
 double		count_t(t_sphere *sphere, t_camera *cam)
@@ -166,11 +147,13 @@ double		count_t(t_sphere *sphere, t_camera *cam)
 	double tca;
 	double d2;
 	double thc;
+	t_vec3f dif;
 
-	tca = (sphere->x - cam->loc.x) * sphere->norm.x + (sphere->y - cam->loc.y) * sphere->norm.y + (sphere->z - cam->loc.z) * sphere->norm.z;  // скалярное произведение векторов;
+	dif = vec_dif(sphere->orig, cam->loc);
+	tca = dotproduct(dif, sphere->norm);
 	if (tca < 0)
 		return (-1);
-	d2 = (pow((sphere->x - cam->loc.x),2) + pow((sphere->y - cam->loc.y),2) + pow((sphere->z - cam->loc.z),2)) - pow(tca,2);
+	d2 =  dotproduct(dif, dif) - pow(tca,2);
 	if (d2 > pow(sphere->R,2))
 		return -1;
 	thc = sqrt(pow(sphere->R,2) - d2);
@@ -190,11 +173,9 @@ int		make_sphere(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 	double Vw;
 	int j;
 	double t;
-	double forward_x = 0;
-	double forward_y = 0;
-	double forward_z = -1;
-	double **matrix;
-	int pix_x = 0, pix_y = 0;
+	double *matrix;
+	double pix_x = 0, pix_y = 0;
+	double n;
 
 	j = 0;
 	Vw = 2 * tan(cam->fov/2 * M_PI/180);
@@ -207,28 +188,20 @@ int		make_sphere(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 	while (pix_y < resol->y)
 	{
 		while (pix_x < resol->x)
-		{/*
-			if (pix_x < resol->x / 2)
-				sphere->scene.x = pix_x - resol->x / 2;
-			else
-				sphere->scene.x = resol->x / 2 - pix_x;
-			if (pix_y > resol->y / 2)
-				sphere->scene.y = resol->y / 2 - pix_y;
-			else
-				sphere->scene.y = pix_y - resol->y / 2;
-			sphere->scene.x *= Vw/resol->x * (resol->x / resol->y);
-			sphere->scene.y *= Vw/resol->y;*/
+		{
 			cam->iratio = resol->x / resol->y;
 			sphere->scene.x = (2 * ((pix_x + 0.5) / resol->x) - 1) * tan(cam->fov / 2 * M_PI / 180) * cam->iratio;
 			sphere->scene.y = (1 - 2 * ((pix_y + 0.5) / resol->y) * tan(cam->fov / 2 * M_PI / 180));
-			look_at(forward_x, forward_y, forward_z, matrix);
+			look_at(matrix);
 			sphere->norm.x = sphere->scene.x * matrix[0][0] + sphere->scene.y * matrix[1][0] + sphere->scene.z * matrix[2][0] - cam->loc.x;
 			sphere->norm.y = sphere->scene.x * matrix[0][1] + sphere->scene.y * matrix[1][1] + sphere->scene.z * matrix[2][1] - cam->loc.y;
 			sphere->norm.z = sphere->scene.x * matrix[0][2] + sphere->scene.y * matrix[1][2] + sphere->scene.z * matrix[2][2] - cam->loc.z;
-			sphere->norm.x *= 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
-			sphere->norm.y *= 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
-			sphere->norm.z *= 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
+			n = 1/sqrt(pow(sphere->norm.x, 2) + pow(sphere->norm.y, 2) + pow(sphere->norm.z, 2));
+			sphere->norm = mult(sphere->norm, n);
 			t = count_t(sphere, cam);
+			if (t >= 0)
+				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
+			t = make_plane(sphere, cam);
 			if (t >= 0)
 				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
 			pix_x++;

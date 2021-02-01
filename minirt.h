@@ -18,6 +18,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct	s_vec3f
+{
+	double	x;
+	double	y;
+	double	z;
+}				t_vec3f;
+
 typedef struct  data
 {
 	void        *img;
@@ -26,14 +33,7 @@ typedef struct  data
 	int         line_length;
 	int         endian;
 }               t_data;
-/*
-typedef struct	centre
-{
-	double	x;
-	double	y;
-	double	z;
-}				t_centre;
-*/
+
 typedef struct	s_scene
 {
 	double	x;
@@ -41,32 +41,22 @@ typedef struct	s_scene
 	double	z;
 }				t_scene;
 
-typedef struct	s_norm
-{
-	double	x;
-	double	y;
-	double	z;
-}				t_norm;
-
 typedef struct  s_sphere
 {
 	t_scene scene;
-	t_norm	norm;
-	double	x;
-	double	y;
-	double	z;
+	t_vec3f	norm;
+	t_vec3f orig;
 	double	R;
 	int		r;
 	int		g;
 	int		b;
 }				t_sphere;
 
-typedef struct	s_vec3f
+typedef struct 	s_plane
 {
-	double	x;
-	double	y;
-	double	z;
-}				t_vec3f;
+	t_vec3f	p0;
+	t_vec3f	n;
+}				t_plane;
 
 typedef struct	s_camera
 {
@@ -84,12 +74,18 @@ typedef struct	s_resol
 
 
 int 	main(void);
-void 	look_at(double forward_x, double forward_y, double forward_z, double **matrix);
+void 	look_at(double **matrix);
 double	count_t(t_sphere *sphere, t_camera *cam);
 t_sphere	init_sphere(void);
 t_camera	init_camera(void);
 t_resol		init_resol(void);
 t_vec3f		init_vect(void);
+t_vec3f 	vec_dif(t_vec3f a, t_vec3f b);
+t_vec3f		matrix_mult(t_vec3f a, t_vec3f b);
+double		dotproduct(t_vec3f a, t_vec3f b);
+t_vec3f 		mult(t_vec3f a, double b);
+int 		make_plane(t_sphere *sphere, t_camera *cam);
+t_plane		init_plane(void);
 int		make_sphere(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 #endif

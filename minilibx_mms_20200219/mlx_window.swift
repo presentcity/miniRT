@@ -215,7 +215,7 @@ class WinEvent: NSWindow
 struct textureList
 {
    var uniformBuffer: MTLBuffer!
-   var uniform_data:UnsafeMutablePointer<double>
+   var uniform_data:UnsafeMutablePointer<Float>
    unowned var image:MlxImg
 }
 
@@ -265,7 +265,7 @@ public class MlxWin
     winE.makeKeyAndOrderFront(nil)
 
 
-    /// drawable_image = MlxImg(d: device, w:Int(CGdouble(vrect.size.width)*winE.screen!.backingScaleFactor), h:Int(CGdouble(vrect.size.height)*winE.screen!.backingScaleFactor), t:1)
+    /// drawable_image = MlxImg(d: device, w:Int(CGFloat(vrect.size.width)*winE.screen!.backingScaleFactor), h:Int(CGFloat(vrect.size.height)*winE.screen!.backingScaleFactor), t:1)
     drawable_image = MlxImg(d: device, w:Int(vrect.size.width), h:Int(vrect.size.height), t:1)
     pixel_image = MlxImg(d: device, w:Int(vrect.size.width), h:Int(vrect.size.height))
     for i in 0...(pixel_image.texture_height*pixel_image.texture_sizeline/4-1)
@@ -316,7 +316,7 @@ public class MlxWin
     pipelineDesc.fragmentFunction = fragmentFunction
     pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineDesc)
 
-    let vertexData: [double] = [
+    let vertexData: [Float] = [
        -1.0, -1.0, 0.0, 1.0,  0.0, 1.0, 0.0, 0.0,
        -1.0, 1.0, 0.0, 1.0,   0.0, 0.0, 0.0, 0.0,
        1.0, -1.0, 0.0, 1.0,   1.0, 1.0, 0.0, 0.0,
@@ -326,13 +326,13 @@ public class MlxWin
     var dataSize = vertexData.count * MemoryLayout.size(ofValue: vertexData[0])
     vertexBuffer = device.makeBuffer(bytes: vertexData, length: dataSize, options: []) 
 
-    let uniformData: [double] = [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, double(vrect.size.width), double(vrect.size.height), 0.0, 0.0, 0.0, 0.0,
+    let uniformData: [Float] = [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Float(vrect.size.width), Float(vrect.size.height), 0.0, 0.0, 0.0, 0.0,
     		     	       1.0, 1.0, 1.0, 1.0 ]
     dataSize = uniformData.count * MemoryLayout.size(ofValue: uniformData[0])
     for _ in 0...255
     { 
       let uniformBuffer = device.makeBuffer(bytes: uniformData, length: dataSize, options: [])!
-      let uniform_data = (uniformBuffer.contents()).assumingMemoryBound(to:double.self)
+      let uniform_data = (uniformBuffer.contents()).assumingMemoryBound(to:Float.self)
       texture_list.append(textureList(uniformBuffer:uniformBuffer, uniform_data:uniform_data, image:pixel_image))
     }
 
@@ -413,22 +413,22 @@ public class MlxWin
 	{
 		waitForGPU()    /// to be able to write again in uniforms
 	}
-	texture_list[texture_list_count].uniform_data[0] = double(img.texture_width)
-	texture_list[texture_list_count].uniform_data[1] = double(img.texture_height)
-	texture_list[texture_list_count].uniform_data[2] = double(src_x)
-	texture_list[texture_list_count].uniform_data[3] = double(src_y)
-	texture_list[texture_list_count].uniform_data[4] = double(src_w)
-	texture_list[texture_list_count].uniform_data[5] = double(src_h)
+	texture_list[texture_list_count].uniform_data[0] = Float(img.texture_width)
+	texture_list[texture_list_count].uniform_data[1] = Float(img.texture_height)
+	texture_list[texture_list_count].uniform_data[2] = Float(src_x)
+	texture_list[texture_list_count].uniform_data[3] = Float(src_y)
+	texture_list[texture_list_count].uniform_data[4] = Float(src_w)
+	texture_list[texture_list_count].uniform_data[5] = Float(src_h)
 
-	texture_list[texture_list_count].uniform_data[8] = double(dest_x)
-	texture_list[texture_list_count].uniform_data[9] = double(dest_y)
-	texture_list[texture_list_count].uniform_data[10] = double(dest_w)
-	texture_list[texture_list_count].uniform_data[11] = double(dest_h)
+	texture_list[texture_list_count].uniform_data[8] = Float(dest_x)
+	texture_list[texture_list_count].uniform_data[9] = Float(dest_y)
+	texture_list[texture_list_count].uniform_data[10] = Float(dest_w)
+	texture_list[texture_list_count].uniform_data[11] = Float(dest_h)
 
-	texture_list[texture_list_count].uniform_data[12] = double((color>>16)&0xFF)/255.0;
-	texture_list[texture_list_count].uniform_data[13] = double((color>>8)&0xFF)/255.0;
-	texture_list[texture_list_count].uniform_data[14] = double((color>>0)&0xFF)/255.0;
-	texture_list[texture_list_count].uniform_data[15] = double((color>>24)&0xFF)/255.0;
+	texture_list[texture_list_count].uniform_data[12] = Float((color>>16)&0xFF)/255.0;
+	texture_list[texture_list_count].uniform_data[13] = Float((color>>8)&0xFF)/255.0;
+	texture_list[texture_list_count].uniform_data[14] = Float((color>>0)&0xFF)/255.0;
+	texture_list[texture_list_count].uniform_data[15] = Float((color>>24)&0xFF)/255.0;
 
 	texture_list[texture_list_count].image = img
 	img.onGPU += 1
@@ -501,38 +501,38 @@ let shaders = """
 using namespace metal;
 
 struct VertexIn {
-    double4 position;
-    double4 UV;
+    float4 position;
+    float4 UV;
 };
 struct VertexOut {
-    double4 position [[ position ]];
-    double4 color;
-    double2 UV;
+    float4 position [[ position ]];
+    float4 color;
+    float2 UV;
 };
 struct uniforms {
-   packed_double2 origin_size;
-   packed_double2 origin_pos;
-   packed_double2 origin_sub;
-   packed_double2 dest_size;
-   packed_double2 dest_pos;
-   packed_double2 dest_sub;
-   packed_double4 color;
+   packed_float2 origin_size;
+   packed_float2 origin_pos;
+   packed_float2 origin_sub;
+   packed_float2 dest_size;
+   packed_float2 dest_pos;
+   packed_float2 dest_sub;
+   packed_float4 color;
 };
 vertex VertexOut basic_vertex_function(const device VertexIn *vertices [[ buffer(0) ]], constant uniforms& uni [[ buffer(1) ]],
 uint vertexID [[ vertex_id ]])
 {
     VertexOut vOut;
-    double4 start = double4((2.0*uni.dest_pos.x)/(uni.dest_size.x-1.0) - 1.0, 1.0 - (2.0*uni.dest_pos.y)/(uni.dest_size.y-1.0) - (uni.dest_sub.y*2.0)/uni.dest_size.y, 0.0, 0.0);
- /*   vOut.position = (start + (vertices[vertexID].position + 1.0) * double4(uni.dest_sub, 0.0, 0.0))/double4(uni.dest_size, 1.0, 1.0); */
+    float4 start = float4((2.0*uni.dest_pos.x)/(uni.dest_size.x-1.0) - 1.0, 1.0 - (2.0*uni.dest_pos.y)/(uni.dest_size.y-1.0) - (uni.dest_sub.y*2.0)/uni.dest_size.y, 0.0, 0.0);
+ /*   vOut.position = (start + (vertices[vertexID].position + 1.0) * float4(uni.dest_sub, 0.0, 0.0))/float4(uni.dest_size, 1.0, 1.0); */
 
-    vOut.position = double4(start.x+((vertices[vertexID].position.x + 1.0)*uni.dest_sub.x)/(uni.dest_size.x),
+    vOut.position = float4(start.x+((vertices[vertexID].position.x + 1.0)*uni.dest_sub.x)/(uni.dest_size.x),
     		    	   start.y+((vertices[vertexID].position.y + 1.0)*uni.dest_sub.y)/(uni.dest_size.y), 0.0, 1.0);
 
-    vOut.UV = (uni.origin_pos + double2(vertices[vertexID].UV.x, vertices[vertexID].UV.y)*(uni.origin_sub-1.0))/(uni.origin_size-1.0);
+    vOut.UV = (uni.origin_pos + float2(vertices[vertexID].UV.x, vertices[vertexID].UV.y)*(uni.origin_sub-1.0))/(uni.origin_size-1.0);
     vOut.color = uni.color;
     return vOut;
 }
-fragment double4 basic_fragment_function(VertexOut vIn [[ stage_in ]], texture2d<double> texture [[ texture(0) ]])
+fragment float4 basic_fragment_function(VertexOut vIn [[ stage_in ]], texture2d<float> texture [[ texture(0) ]])
 {
     constexpr sampler textureSampler(address::clamp_to_edge);
     return vIn.color*texture.sample(textureSampler, vIn.UV);
