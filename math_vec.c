@@ -28,7 +28,7 @@ double		dotproduct(t_vec3f a, t_vec3f b)
 	return((a.x * b.x) + (a.y * b.y) + (a.z * b.z));
 }
 
-t_vec3f 		mult(t_vec3f a, double b)
+t_vec3f 		norm(t_vec3f a, double b)
 {
 	t_vec3f c;
 
@@ -39,7 +39,18 @@ t_vec3f 		mult(t_vec3f a, double b)
 	return(c);
 }
 
-t_vec3f		matrix_mult(t_vec3f a, t_vec3f b)
+t_vec3f			matrix_product(t_vec3f a, t_matrix *matrix, t_camera *cam)
+{
+	t_vec3f norm;
+
+	norm.x = (a.x * matrix->right.x + a.y * matrix->up.x + a.z * matrix->forward.x) - cam->loc.x;
+	norm.y = (a.x * matrix->right.y + a.y * matrix->up.y + a.z * matrix->forward.y) - cam->loc.y;
+	norm.z = (a.x * matrix->right.z + a.y * matrix->up.z + a.z * matrix->forward.z) - cam->loc.z;
+
+	return(norm);
+}
+
+t_vec3f		crossproduct(t_vec3f a, t_vec3f b)
 {
 	t_vec3f c;
 	c.x = a.y * b.z - a.z * b.y;
