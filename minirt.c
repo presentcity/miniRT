@@ -154,6 +154,43 @@ int 	make_trian(t_triangle *triangle, t_camera *cam)
 	return (1);
 }
 
+int 	make_square(t_camera *cam)
+{
+	double denom;
+	double t;
+	t_square		square;
+	t_vec3f dif;
+	double m, n;
+
+	dif = vec_dif(square.p0, cam->loc);
+	m = dotproduct(dif, square.n);
+	n = dotproduct(cam->dir, square.n);
+	t = m / n;
+	intersect_point = cam->loc + (t * cam->dir);
+	u = intersect_point - square.p0;
+	proj1 = dotproduct()
+	if (t >= 0)
+	{
+		if ((proj1 < width && proj1 > 0) && (proj2 < height && proj2 > 0))
+			return (1);
+	}
+	return(-1);
+	/*double t;
+	double denom;
+	t_square		square;
+
+	square = init_square();
+	denom = dotproduct(cam->dir, square.n);
+	if (fabs(denom) > 1.0e-6)
+	{
+		t = dotproduct(vec_dif(square.p0, cam->loc), square.n) / denom;
+		square.p0 = vec_summary(cam->loc, norm(cam->dir, t));
+		if (t >= 0.0 && t < 12.6)
+			return (1);
+	}
+	return (-1);*/
+}
+
 int		make_all(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 {
 	double Vw;
@@ -180,7 +217,7 @@ int		make_all(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 			n = 1/sqrt(pow(cam->dir.x, 2) + pow(cam->dir.y, 2) + pow(cam->dir.z, 2));
 			cam->dir = norm(cam->dir, n);
 			//t = max(make_plane(cam), make_sphere(sphere, cam));
-			t = make_plane(cam);
+		/*	t = make_plane(cam);
 			if (t >= 0)
 				my_mlx_pixel_put(img, pix_x, pix_y, 0x000000FF);
 			t = make_sphere(sphere, cam);
@@ -188,7 +225,10 @@ int		make_all(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
 			t = make_trian(&triangle, cam);
 			if (t >= 0)
-				my_mlx_pixel_put(img, pix_x, pix_y, 0x00ffffff);
+				my_mlx_pixel_put(img, pix_x, pix_y, 0x00ffffff);*/
+			t = make_square(cam);
+			if (t >= 0)
+				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
 			pix_x++;
 		}
 		pix_x = 0;

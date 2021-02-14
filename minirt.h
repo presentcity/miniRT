@@ -56,6 +56,14 @@ typedef struct 	s_plane
 	t_rgb rgb;
 }				t_plane;
 
+typedef struct 	s_square
+{
+	t_vec3f	p0;
+	t_vec3f	n;
+	t_rgb rgb;
+	double side;
+}				t_square;
+
 typedef struct	s_camera
 {
 	t_vec3f	loc;
@@ -93,11 +101,14 @@ int 	main(void);
 void 	look_at(t_matrix *matrix);
 double	make_sphere(t_sphere *sphere, t_camera *cam);
 t_sphere	init_sphere(void);
+t_square		init_square(void);
+t_plane		init_plane(void);
 t_camera	init_camera(void);
 t_resol		init_resol(void);
 t_vec3f		init_vect(void);
 t_matrix	init_matr(void);
 t_vec3f 	vec_dif(t_vec3f a, t_vec3f b);
+t_vec3f 	vec_summary(t_vec3f a, t_vec3f b);
 t_vec3f		crossproduct(t_vec3f a, t_vec3f b);
 t_vec3f			matrix_product(t_vec3f a, t_matrix *matrix, t_camera *cam);
 double		dotproduct(t_vec3f a, t_vec3f b);

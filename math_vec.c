@@ -23,6 +23,17 @@ t_vec3f 	vec_dif(t_vec3f a, t_vec3f b)
 	return(c);
 }
 
+t_vec3f 	vec_summary(t_vec3f a, t_vec3f b)
+{
+	t_vec3f c;
+
+	c.x = a.x + b.x;
+	c.y = a.y + b.y;
+	c.z = a.z + b.z;
+
+	return(c);
+}
+
 double		dotproduct(t_vec3f a, t_vec3f b)
 {
 	return((a.x * b.x) + (a.y * b.y) + (a.z * b.z));

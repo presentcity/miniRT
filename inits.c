@@ -73,6 +73,17 @@ t_plane		init_plane(void)
 	return(plane);
 }
 
+t_square		init_square(void)
+{
+	t_square		square;
+
+	square.n = (t_vec3f){0.0, -1.0, 0.0};
+	square.p0 = (t_vec3f){0.0, 0.0, 0.0};
+	square.rgb = (t_rgb){0.0, 0.0, 0.0};
+	square.side = 0.6;
+	return(square);
+}
+
 t_triangle	init_trian(void)
 {
 	t_triangle	triangle;
