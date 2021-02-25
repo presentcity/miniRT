@@ -45,19 +45,30 @@ typedef struct  s_data
 	int         endian;
 }               t_data;
 
-typedef struct  s_sphere
-{
-	t_vec3f orig;
-	double	R;
-	t_rgb rgb;
-}				t_sphere;
-
 typedef struct 	s_plane
 {
 	t_vec3f	p0;
 	t_vec3f	n;
 	t_rgb rgb;
 }				t_plane;
+
+typedef struct  s_sphere
+{
+	t_vec3f cen;
+	double	R;
+	t_rgb rgb;
+}				t_sphere;
+
+typedef struct s_triangle
+{
+	t_vec3f v0;
+	t_vec3f v1;
+	t_vec3f v2;
+	t_vec3f edge0;
+	t_vec3f edge1;
+	t_vec3f edge2;
+	t_rgb rgb;
+}				t_triangle;
 
 typedef struct 	s_square
 {
@@ -89,18 +100,6 @@ typedef struct	s_matrix
 	t_vec3f tmp;
 }				t_matrix;
 
-typedef struct s_triangle
-{
-	t_vec3f v0;
-	t_vec3f v1;
-	t_vec3f v2;
-	t_vec3f edge0;
-	t_vec3f edge1;
-	t_vec3f edge2;
-	t_rgb rgb;
-
-}				t_triangle;
-
 typedef struct  s_shapes
 {
 	t_sphere sphere;
@@ -125,6 +124,7 @@ typedef struct s_close_obj
 	double t;
 	t_rgb color;
 	int type;
+	t_vec3f n;
 }				t_close_obj;
 
 int 	main(void);
@@ -150,6 +150,8 @@ int 		make_plane(t_plane *plane, t_camera *cam);
 t_plane		init_plane(void);
 int			rgb_to_color(t_rgb *rgb);
 t_triangle	init_trian(void);
+void	norm(t_vec3f *vec);
+t_vec3f get_shapnorm(t_vec3f n, t_close_obj *close_obj);
 t_shapes init_shapes();
 int			rgb_to_color(t_rgb *rgb);
 t_objects	init_obj(t_shapes *shapes, t_camera *cam);

@@ -80,3 +80,13 @@ t_vec3f		crossproduct(t_vec3f a, t_vec3f b)
 
 	return(c);
 }
+
+void	norm(t_vec3f *vec)
+{
+	double len;
+
+	len = sqrt(pow(vec->x, 2) + pow(vec->y, 2) + pow(vec->z, 2));
+	vec->x /= len;
+	vec->y /= len;
+	vec->z /= len;
+}

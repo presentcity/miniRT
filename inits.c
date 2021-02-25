@@ -102,7 +102,7 @@ t_sphere	init_sphere(void)
 {
 	t_sphere sphere;
 
-	sphere.orig = (t_vec3f){0.3, 0.0, 0.0};
+	sphere.cen = (t_vec3f){0.3, 0.0, 0.0};
 	sphere.R = 0.1;
 	sphere.rgb = (t_rgb){255, 0.0, 0};
 	return (sphere);

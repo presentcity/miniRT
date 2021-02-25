@@ -38,7 +38,7 @@ double		make_sphere(t_sphere *sphere, t_camera *cam)
 	double thc;
 	t_vec3f dif;
 
-	dif = vec_dif(sphere->orig, cam->loc);
+	dif = vec_dif(sphere->cen, cam->loc);
 	tca = dotproduct(dif, cam->dir);
 	if (tca < 0)
 		return (-1);
