@@ -138,30 +138,6 @@ void 	closest_object(t_close_obj *close_obj, t_objects *objects)
 		close_obj->t = -1;
 }
 
-void	which_shape(t_close_obj *close_obj, t_objects *objects, t_shapes *shapes)
-{
-	if (objects->plane == 1)
-	{
-		close_obj->type = PLANE;
-		close_obj->color = shapes->plane.rgb;
-	}
-	if (objects->sphere == 1)
-	{
-		close_obj->type = SPH;
-		close_obj->color = shapes->sphere.rgb;
-	}
-	if (objects->trian == 1)
-	{
-		close_obj->type = TRI;
-		close_obj->color = shapes->trian.rgb;
-	}
-	if (objects->square == 1)
-	{
-		close_obj->type = SQU;
-		close_obj->color = shapes->squ.rgb;
-	}
-}
-
 int		make_all(t_data *img, t_camera *cam, t_resol *resol)
 {
 	double Vw;

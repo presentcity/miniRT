@@ -12,7 +12,7 @@
 
 #include "minirt.h"
 
-/*t_rgb	color2_coeff(t_rgb a, double n)
+t_rgb	color2_coeff(t_rgb a, double n)
 {
 	t_rgb res;
 
@@ -27,14 +27,14 @@ t_rgb	shade(t_scene *scene, t_camera *cam, t_close_obj *close_obj, double t)
 	t_vec3f		hit_point;
 	t_vec3f		hit_normal;
 	t_list		*runner;
-	t_rgb	result;
+	t_rgb	res;
 	t_rgb	addition;
 
-	result = int_color(0);
+	res = int_color(0);
 	hit_point = vec_summary(cam->loc, mult(cam->dir, t));
 	hit_normal = get_shapnorm(hit_point, close_obj);
 	if (dotproduct(cam->dir, hit_normal) > 0)
-		hit_normal = vec_dif(create_vec(0, 0, 0), mult(hit_normal, 1));
+		hit_normal = vec_dif(init_vect(), mult(hit_normal, 1));
 	runner = scene->lights;
 	while (runner != NULL)
 	{
@@ -63,4 +63,4 @@ int			get_color(t_scene *scene, t_ray sent, t_close_obj *close_obj)
 	}
 	else
 		return (0);
-}*/
+}
