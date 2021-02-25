@@ -69,7 +69,7 @@ t_plane		init_plane(void)
 
 	plane.n = (t_vec3f){0.0, -1.0, 0.0};
 	plane.p0 = (t_vec3f){0.0, 0.0, 0.0};
-	plane.rgb = (t_rgb){0.0, 0.0, 0.0};
+	plane.rgb = (t_rgb){0, 0, 255};
 	return(plane);
 }
 
@@ -77,10 +77,10 @@ t_square		init_square(void)
 {
 	t_square		square;
 
-	square.n = (t_vec3f){0.0, -1.0, 0.0};
-	square.p0 = (t_vec3f){0.0, 0.0, 0.0};
-	square.rgb = (t_rgb){0.0, 0.0, 0.0};
-	square.side = 0.6;
+	square.n = (t_vec3f){0.0, 1.0, 0.7};
+	square.p0 = (t_vec3f){-0.2, 0.0, 0.0};
+	square.rgb = (t_rgb){255, 0.0, 0};
+	square.side = 0.1;
 	return(square);
 }
 
@@ -94,6 +94,7 @@ t_triangle	init_trian(void)
 	triangle.edge0 = (t_vec3f){0.0, 0.0, 0.0};
 	triangle.edge1 = (t_vec3f){0.0, 0.0, 0.0};
 	triangle.edge2 = (t_vec3f){0.0, 0.0, 0.0};
+	triangle.rgb = (t_rgb){255, 255, 255};
 	return(triangle);
 }
 
@@ -102,8 +103,37 @@ t_sphere	init_sphere(void)
 	t_sphere sphere;
 
 	sphere.orig = (t_vec3f){0.3, 0.0, 0.0};
-	sphere.scene = (t_vec3f){0.0, 0.0, 1.0};
 	sphere.R = 0.1;
-	sphere.rgb = (t_rgb){0.0, 0.0, 0.0};
+	sphere.rgb = (t_rgb){255, 0.0, 0};
 	return (sphere);
+}
+
+t_shapes init_shapes()
+{
+	t_shapes shapes;
+	t_triangle	triangle;
+	t_plane		plane;
+	t_sphere	sphere;
+	t_square square;
+
+	sphere = init_sphere();
+	triangle = init_trian();
+	plane = init_plane();
+	square = init_square();
+	shapes.sphere = sphere;
+	shapes.plane = plane;
+	shapes.trian = triangle;
+	shapes.squ = square;
+	return(shapes);
+}
+
+t_objects	init_obj(t_shapes *shapes, t_camera *cam)
+{
+	t_objects objects;
+
+	objects.sphere = make_sphere(&shapes->sphere, cam);
+	objects.trian = make_trian(&shapes->trian, cam);
+	objects.plane = make_plane(&shapes->plane, cam);
+	objects.square = make_square(&shapes->squ, cam);
+	return(objects);
 }

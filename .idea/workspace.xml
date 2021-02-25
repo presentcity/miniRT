@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
-    <generated />
+    <generated>
+      <config projectName="miniRT" targetName="debug" />
+      <config projectName="miniRT" targetName="re" />
+      <config projectName="miniRT" targetName="all" />
+      <config projectName="miniRT" targetName="fclean" />
+      <config projectName="miniRT" targetName="miniRT" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -13,12 +19,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a49b43c7-b150-4ff4-b56b-44b35bf6cc03" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/shades.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/miniRT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/miniRT.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/color.c" beforeDir="false" afterPath="$PROJECT_DIR$/color.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/color.o" beforeDir="false" afterPath="$PROJECT_DIR$/color.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug" beforeDir="false" afterPath="$PROJECT_DIR$/debug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug.dSYM/Contents/Resources/DWARF/debug" beforeDir="false" afterPath="$PROJECT_DIR$/debug.dSYM/Contents/Resources/DWARF/debug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inits.c" beforeDir="false" afterPath="$PROJECT_DIR$/inits.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inits.o" beforeDir="false" afterPath="$PROJECT_DIR$/inits.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/math_vec.c" beforeDir="false" afterPath="$PROJECT_DIR$/math_vec.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/math_vec.o" beforeDir="false" afterPath="$PROJECT_DIR$/math_vec.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/miniRT" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/minirt.c" beforeDir="false" afterPath="$PROJECT_DIR$/minirt.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minirt.h" beforeDir="false" afterPath="$PROJECT_DIR$/minirt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minirt.o" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +52,43 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="miniRT" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="miniRT" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectId" id="1nl2fYgk1Et8qhrNbzW7m8aNegn" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -47,12 +98,37 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Makefile" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Language Defaults" />
   </component>
-  <component name="RunManager">
-    <configuration name="Unnamed" type="CMakeRunConfiguration" factoryName="Application" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" RUN_PATH="$PROJECT_DIR$/Makefile" EXPLICIT_BUILD_TARGET_NAME="all">
+  <component name="RunManager" selected="Makefile Application.debug">
+    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="all" CONFIG_NAME="all" version="1" RUN_PATH="$PROJECT_DIR$/debug">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="debug" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="debug" CONFIG_NAME="debug" version="1" RUN_PATH="$PROJECT_DIR$/debug">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="fclean" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="fclean" CONFIG_NAME="fclean" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="miniRT" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="miniRT" CONFIG_NAME="miniRT" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="re" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="re" CONFIG_NAME="re" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed" type="CMakeRunConfiguration" factoryName="Application" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" RUN_PATH="$PROJECT_DIR$/miniRT" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -62,6 +138,14 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="CMake Application.Unnamed" />
+      <item itemvalue="Makefile Application.all" />
+      <item itemvalue="Makefile Application.debug" />
+      <item itemvalue="Makefile Application.fclean" />
+      <item itemvalue="Makefile Application.miniRT" />
+      <item itemvalue="Makefile Application.re" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -74,11 +158,38 @@
       <workItem from="1611950464320" duration="5603000" />
       <workItem from="1613327448546" duration="1425000" />
       <workItem from="1613330394432" duration="1951000" />
+      <workItem from="1614165632760" duration="90000" />
+      <workItem from="1614165725622" duration="3000" />
+      <workItem from="1614165737005" duration="9811000" />
+      <workItem from="1614178211051" duration="6047000" />
+      <workItem from="1614251031144" duration="5693000" />
+      <workItem from="1614261785202" duration="2181000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/minirt.c</url>
+          <line>195</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/color.c</url>
+          <line>28</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/inits.c</url>
+          <line>96</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

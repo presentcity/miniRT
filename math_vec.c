@@ -39,7 +39,17 @@ double		dotproduct(t_vec3f a, t_vec3f b)
 	return((a.x * b.x) + (a.y * b.y) + (a.z * b.z));
 }
 
-t_vec3f 		norm(t_vec3f a, double b)
+t_vec3f		create_vec(double x, double y, double z)
+{
+	t_vec3f new;
+
+	new.x = x;
+	new.y = y;
+	new.z = z;
+	return (new);
+}
+
+t_vec3f 		mult(t_vec3f a, double b)
 {
 	t_vec3f c;
 

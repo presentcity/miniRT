@@ -67,142 +67,115 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-int 		make_plane(t_camera *cam)
-{
-	double denom;
-	double t;
-	t_plane		plane;
-	t_vec3f dif;
-
-	plane = init_plane();
-	dif = vec_dif(plane.p0, cam->loc);
-	denom = dotproduct(plane.n, cam->dir);
-	if (denom < 1e-6)
-	{
-		t = dotproduct(dif, plane.n) / denom;
-		return (t >= 0);
-	}
-	return(-1);
-}
-
 void 	look_at(t_matrix *matrix)
 {
 	matrix->right = crossproduct(matrix->forward, matrix->tmp);
 	matrix->up = crossproduct(matrix->right, matrix->forward);
 }
 
-double		make_sphere(t_sphere *sphere, t_camera *cam)
-{
-	double t1;
-	double t2;
-	double t;
-	double tca;
-	double d2;
-	double thc;
-	t_vec3f dif;
-
-	dif = vec_dif(sphere->orig, cam->loc);
-	tca = dotproduct(dif, cam->dir);
-	if (tca < 0)
-		return (-1);
-	d2 =  dotproduct(dif, dif) - pow(tca,2);
-	if (d2 > pow(sphere->R,2))
-		return -1;
-	thc = sqrt(pow(sphere->R,2) - d2);
-	t1 = tca - thc;
-	t2 = tca + thc;
-	if (t1 < 0 && t2 < 0)
-		return -1;
-	if (t1 > 0 && t2 > 0)
-		t = t1 < t2 ? t1 : t2;
-	else
-		t = t1 < t2 ? t2 : t1;
-	return (t);
-}
-
-double 		max(double a, double b)
+double 		min_t(double a, double b, t_objects *objects, int n)
 {
 	double tmp;
 
-	tmp = a > b ? a : b;
+	if ((a < b && a > 0) || (b < 0 && a > 0))
+	{
+		tmp = a;
+		objects->handle = (n == 0 ? PLANE : TRI);
+	}
+	else if ((b < a && b > 0) || (a < 0 && b > 0))
+	{
+		tmp = b;
+		objects->handle = (n == 0 ? SPH : SQU);
+	}
+	else
+		tmp = -1;
 	return(tmp);
 }
 
-int 	make_trian(t_triangle *triangle, t_camera *cam)
+void 	closest_object(t_close_obj *close_obj, t_objects *objects)
 {
-	t_vec3f tvec;
-	t_vec3f qvec;
-	t_vec3f pvec;
-	double v, u, det, invdet, t;
+	double min;
 
-	triangle->edge0 = vec_dif(triangle->v1, triangle->v0);
-	triangle->edge1 = vec_dif(triangle->v2, triangle->v0);
-	pvec = crossproduct(cam->dir, triangle->edge1);
-	det = dotproduct(triangle->edge0, pvec);
-	if (fabs(det) < 1e-6)
-		return (-1);
-	invdet = 1 / det;
-	tvec = vec_dif(cam->loc, triangle->v0);
-	u = dotproduct(tvec, pvec) * invdet;
-	if (u < 0 || u > 1)
-		return (-1);
-	qvec = crossproduct(tvec, triangle->edge0);
-	v = dotproduct(cam->dir, qvec) * invdet;
-	if (v < 0 || u + v > 1)
-		return (-1);
-	t = dotproduct(triangle->edge1, qvec)* invdet;
-	return (1);
+	min = min_t(objects->plane, objects->sphere, objects, 0);
+	if (objects->handle == PLANE && min > 0)
+	{
+		objects->obj1 = objects->plane;
+		objects->plane = 1;
+	}
+	else if (objects->handle == SPH && min > 0)
+	{
+		objects->obj1 = objects->sphere;
+		objects->sphere = 1;
+	}
+	else
+		objects->obj1 = -1;
+	min = min_t(objects->trian, objects->square, objects, 1);
+	if (objects->handle == TRI && min > 0)
+	{
+		objects->obj2 = objects->trian;
+		objects->trian = 1;
+	}
+	else if (objects->handle == SQU && min > 0)
+	{
+		objects->obj2 = objects->square;
+		objects->square = 1;
+	}
+	else
+		objects->obj2 = -1;
+	if ((objects->obj1 < objects->obj2 && objects->obj1 > 0) || (objects->obj2 < 0 && objects->obj1 > objects->obj2))
+	{
+		close_obj->t = objects->obj1;
+		objects->trian = 0;
+		objects->square = 0;
+	}
+	else if ((objects->obj2 < objects->obj1 && objects->obj2 > 0) || (objects->obj1 < 0 && objects->obj2 > objects->obj1))
+	{
+		close_obj->t = objects->obj2;
+		objects->plane = 0;
+		objects->sphere = 0;
+	}
+	if (objects->obj2 < 0 && objects->obj1 < 0)
+		close_obj->t = -1;
 }
 
-int 	make_square(t_camera *cam)
+void	which_shape(t_close_obj *close_obj, t_objects *objects, t_shapes *shapes)
 {
-	double denom;
-	double t;
-	t_square		square;
-	t_vec3f dif;
-	double m, n;
-
-	dif = vec_dif(square.p0, cam->loc);
-	m = dotproduct(dif, square.n);
-	n = dotproduct(cam->dir, square.n);
-	t = m / n;
-	intersect_point = cam->loc + (t * cam->dir);
-	u = intersect_point - square.p0;
-	proj1 = dotproduct()
-	if (t >= 0)
+	if (objects->plane == 1)
 	{
-		if ((proj1 < width && proj1 > 0) && (proj2 < height && proj2 > 0))
-			return (1);
+		close_obj->type = PLANE;
+		close_obj->color = shapes->plane.rgb;
 	}
-	return(-1);
-	/*double t;
-	double denom;
-	t_square		square;
-
-	square = init_square();
-	denom = dotproduct(cam->dir, square.n);
-	if (fabs(denom) > 1.0e-6)
+	if (objects->sphere == 1)
 	{
-		t = dotproduct(vec_dif(square.p0, cam->loc), square.n) / denom;
-		square.p0 = vec_summary(cam->loc, norm(cam->dir, t));
-		if (t >= 0.0 && t < 12.6)
-			return (1);
+		close_obj->type = SPH;
+		close_obj->color = shapes->sphere.rgb;
 	}
-	return (-1);*/
+	if (objects->trian == 1)
+	{
+		close_obj->type = TRI;
+		close_obj->color = shapes->trian.rgb;
+	}
+	if (objects->square == 1)
+	{
+		close_obj->type = SQU;
+		close_obj->color = shapes->squ.rgb;
+	}
 }
 
-int		make_all(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
+int		make_all(t_data *img, t_camera *cam, t_resol *resol)
 {
 	double Vw;
+	t_objects objects;
 	int j;
-	double t;
 	t_matrix	matrix;
 	double pix_x = 0, pix_y = 0;
 	double n;
-	t_triangle	triangle;
+	t_close_obj close_obj;
+	t_shapes shapes;
+	t_vec3f scene;
 
 	j = 0;
-	triangle = init_trian();
+	scene = (t_vec3f){0.0, 0.0, 1.0};
 	matrix = init_matr();
 	Vw = 2 * tan(cam->fov/2 * M_PI/180);
 	while (pix_y < resol->y)
@@ -210,25 +183,18 @@ int		make_all(t_data *img, t_sphere *sphere, t_camera *cam, t_resol *resol)
 		while (pix_x < resol->x)
 		{
 			cam->iratio = resol->x / resol->y;
-			sphere->scene.x = (2 * ((pix_x + 0.5) / resol->x) - 1) * tan(cam->fov / 2 * M_PI / 180) * cam->iratio;
-			sphere->scene.y = (1 - 2 * ((pix_y + 0.5) / resol->y)) * tan(cam->fov / 2 * M_PI / 180);
+			scene.x = (2 * ((pix_x + 0.5) / resol->x) - 1) * tan(cam->fov / 2 * M_PI / 180) * cam->iratio;
+			scene.y = (1 - 2 * ((pix_y + 0.5) / resol->y)) * tan(cam->fov / 2 * M_PI / 180);
 			look_at(&matrix);
-			cam->dir = matrix_product(sphere->scene, &matrix, cam);
+			cam->dir = matrix_product(scene, &matrix, cam);
 			n = 1/sqrt(pow(cam->dir.x, 2) + pow(cam->dir.y, 2) + pow(cam->dir.z, 2));
-			cam->dir = norm(cam->dir, n);
-			//t = max(make_plane(cam), make_sphere(sphere, cam));
-		/*	t = make_plane(cam);
-			if (t >= 0)
-				my_mlx_pixel_put(img, pix_x, pix_y, 0x000000FF);
-			t = make_sphere(sphere, cam);
-			if (t >= 0)
-				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
-			t = make_trian(&triangle, cam);
-			if (t >= 0)
-				my_mlx_pixel_put(img, pix_x, pix_y, 0x00ffffff);*/
-			t = make_square(cam);
-			if (t >= 0)
-				my_mlx_pixel_put(img, pix_x, pix_y, 0x00FF0000);
+			cam->dir = mult(cam->dir, n);
+			shapes = init_shapes();
+			objects = init_obj(&shapes, cam);
+			closest_object(&close_obj, &objects);
+			which_shape(&close_obj, &objects, &shapes);
+			if (close_obj.t >= 0)
+				my_mlx_pixel_put(img, pix_x, pix_y, rgb_to_color(&close_obj.color));
 			pix_x++;
 		}
 		pix_x = 0;
@@ -242,13 +208,11 @@ int 	main(void)
 	void *mlx;
 	void *win;
 	t_data  img;
-	t_sphere	sphere;
 	t_camera	cam;
 	t_resol		resol;
 	t_vec3f		vec;
 
 	vec = init_vect();
-	sphere = init_sphere();
 	cam = init_camera();
 	resol = init_resol();
 	mlx = mlx_init();
@@ -258,7 +222,8 @@ int 	main(void)
 		&img.line_length, &img.endian);
 	if (win == 0)
 		mlx_destroy_window(mlx, win);
-	make_all(&img, &sphere, &cam, &resol);
+	make_all(&img, &cam, &resol);
 	mlx_put_image_to_window(mlx, win, img.img, 0, 0);
+	//write(1, "Ready\n", 6);
 	mlx_loop(mlx);
 }

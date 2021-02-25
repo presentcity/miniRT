@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minirt.h"
 /*
 t_vec3f		*color_to_rgb(unsigned int color)
 {
@@ -23,3 +24,14 @@ t_vec3f		*color_to_rgb(unsigned int color)
 	color.r = (int)(((color - blue) / (256 * 256)) - green / 256);
 	return (color((double)red, (double)green, (double)blue));
 }*/
+
+int			rgb_to_color(t_rgb *rgb)
+{
+	int color;
+
+	color = (int)(((int)rgb->r));
+	color = (int)((color << 8) + (int)rgb->g);
+	color = (int)((color << 8) + (int)rgb->b);
+	return (color);
+}
+
