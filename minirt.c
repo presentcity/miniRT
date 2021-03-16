@@ -122,20 +122,29 @@ void 	closest_object(t_close_obj *close_obj, t_objects *objects)
 	}
 	else
 		objects->obj2 = -1;
-	if ((objects->obj1 < objects->obj2 && objects->obj1 > 0) || (objects->obj2 < 0 && objects->obj1 > objects->obj2))
+	if (objects->obj2 < 0 && objects->obj1 < 0 && objects->cyl < 0)
+		close_obj->t = -1;
+	if (((objects->obj1 < objects->obj2 && objects->obj1 > 0) || (objects->obj2 < 0 && objects->obj1 > objects->obj2)) && objects->cyl > 0 && objects->cyl > objects->obj1)
 	{
 		close_obj->t = objects->obj1;
 		objects->trian = 0;
 		objects->square = 0;
 	}
-	else if ((objects->obj2 < objects->obj1 && objects->obj2 > 0) || (objects->obj1 < 0 && objects->obj2 > objects->obj1))
+	else if (((objects->obj2 < objects->obj1 && objects->obj2 > 0) || (objects->obj1 < 0 && objects->obj2 > objects->obj1)) && objects->cyl > 0 && objects->cyl > objects->obj2)
 	{
 		close_obj->t = objects->obj2;
 		objects->plane = 0;
 		objects->sphere = 0;
 	}
-	if (objects->obj2 < 0 && objects->obj1 < 0)
-		close_obj->t = -1;
+	else if (objects->obj2 < 0 && objects->obj1 < 0 && objects->cyl > 0)
+	{
+		close_obj->t = objects->cyl;
+		objects->cyl = 1;
+		objects->plane = 0;
+		objects->sphere = 0;
+		objects->trian = 0;
+		objects->square = 0;
+	}
 }
 
 int		make_all(t_data *img, t_camera *cam, t_resol *resol)
@@ -144,9 +153,9 @@ int		make_all(t_data *img, t_camera *cam, t_resol *resol)
 	t_objects objects;
 	int j;
 	t_matrix	matrix;
-	double pix_x = 0, pix_y = 0;
+	double pix_x = 960, pix_y = 540;
 	double n;
-	t_close_obj close_obj;
+	//t_close_obj close_obj;
 	t_shapes shapes;
 	t_vec3f scene;
 
@@ -167,10 +176,12 @@ int		make_all(t_data *img, t_camera *cam, t_resol *resol)
 			cam->dir = mult(cam->dir, n);
 			shapes = init_shapes();
 			objects = init_obj(&shapes, cam);
-			closest_object(&close_obj, &objects);
+			/*closest_object(&close_obj, &objects);
 			which_shape(&close_obj, &objects, &shapes);
 			if (close_obj.t >= 0)
-				my_mlx_pixel_put(img, pix_x, pix_y, rgb_to_color(&close_obj.color));
+				my_mlx_pixel_put(img, pix_x, pix_y, rgb_to_color(&close_obj.color));*/
+			if (objects.cyl > 0)
+				my_mlx_pixel_put(img, pix_x, pix_y, 0x0000FF00);
 			pix_x++;
 		}
 		pix_x = 0;

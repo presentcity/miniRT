@@ -16,6 +16,7 @@
 # define SPH 2
 # define SQU 3
 # define TRI 4
+# define CYL 5
 
 #include <mlx.h>
 #include <math.h>
@@ -35,6 +36,14 @@ typedef struct	s_rgb
 	double	g;
 	double	b;
 }				t_rgb;
+
+typedef struct s_light
+{
+	double bright;
+	t_vec3f loc;
+	t_rgb color;
+	int type;
+}				t_light;
 
 typedef struct  s_data
 {
@@ -69,6 +78,17 @@ typedef struct s_triangle
 	t_vec3f edge2;
 	t_rgb rgb;
 }				t_triangle;
+
+typedef struct s_cyl
+{
+	t_vec3f p0;
+	t_vec3f p1;
+	t_vec3f cen;
+	double D;
+	double height;
+	t_vec3f	n;
+	t_rgb rgb;
+}				t_cyl;
 
 typedef struct 	s_square
 {
@@ -106,6 +126,7 @@ typedef struct  s_shapes
 	t_plane plane;
 	t_square 	squ;
 	t_triangle trian;
+	t_cyl cyl;
 }				t_shapes;
 
 typedef struct s_objects
@@ -114,6 +135,7 @@ typedef struct s_objects
 	double sphere;
 	double trian;
 	double square;
+	double cyl;
 	int handle;
 	double obj1;
 	double obj2;
@@ -130,7 +152,6 @@ typedef struct s_close_obj
 int 	main(void);
 void 	look_at(t_matrix *matrix);
 double	make_sphere(t_sphere *sphere, t_camera *cam);
-t_sphere	init_sphere(void);
 int 	make_square(t_square *square, t_camera *cam);
 int 	make_trian(t_triangle *triangle, t_camera *cam);
 t_square		init_square(void);
@@ -139,24 +160,44 @@ t_camera	init_camera(void);
 t_resol		init_resol(void);
 t_vec3f		init_vect(void);
 t_matrix	init_matr(void);
+t_triangle	init_trian(void);
+t_sphere	init_sphere(void);
+t_plane		init_plane(void);
+t_objects	init_obj(t_shapes *shapes, t_camera *cam);
+t_shapes init_shapes();
 t_vec3f 	vec_dif(t_vec3f a, t_vec3f b);
+void	norm(t_vec3f vec);
 t_vec3f 	vec_summary(t_vec3f a, t_vec3f b);
+double		dist_vec(t_vec3f v1, t_vec3f v2);
 t_vec3f		crossproduct(t_vec3f a, t_vec3f b);
+double 		veclen(t_vec3f vec);
 t_vec3f			matrix_product(t_vec3f a, t_matrix *matrix, t_camera *cam);
 double		dotproduct(t_vec3f a, t_vec3f b);
 t_vec3f 		mult(t_vec3f a, double b);
 void 	closest_object(t_close_obj *close_obj, t_objects *objects);
 int 		make_plane(t_plane *plane, t_camera *cam);
-t_plane		init_plane(void);
 int			rgb_to_color(t_rgb *rgb);
-t_triangle	init_trian(void);
-void	norm(t_vec3f *vec);
+/*double	cyl_side(double t, t_cyl *cyl, t_camera *cam);
+double make_cyl(t_cyl *cyl, t_camera *cam);*/
 t_vec3f get_shapnorm(t_vec3f n, t_close_obj *close_obj);
-t_shapes init_shapes();
 int			rgb_to_color(t_rgb *rgb);
-t_objects	init_obj(t_shapes *shapes, t_camera *cam);
 void	which_shape(t_close_obj *close_obj, t_objects *objects, t_shapes *shapes);
 double 		min_t(double a, double b, t_objects *objects, int n);
 int		make_all(t_data *img, t_camera *cam, t_resol *resol);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+float	intersec_cylinder(t_cyl *cyl);
+float		scal_mult_vec(t_vec3f v1, t_vec3f v2);
+float		length_vec(t_vec3f vector);
+float		dist_vec1(t_vec3f v1, t_vec3f v2);
+t_vec3f	*cross_vect(t_vec3f v1, t_vec3f v2);
+t_vec3f	*add_vect1(t_vec3f v1, t_vec3f v2);
+t_vec3f	*subtract_vect(t_vec3f v1, t_vec3f v2);
+t_vec3f	*mult_vect(t_vec3f v1, float t);
+
+float	check_top_plane(t_cyl *cyl, t_vec3f coords, t_vec3f direction);
+
+float	check_bottom_plane(t_cyl *cyl, t_vec3f coords, t_vec3f direction);
+
+float	check_cyl_side(float t, t_cyl *cyl, t_vec3f coords,
+						t_vec3f direction);
 #endif

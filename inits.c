@@ -56,8 +56,8 @@ t_camera	init_camera(void)
 {
 	t_camera	camera;
 
-	camera.loc = (t_vec3f){0.0, 0.0, 1.0};
-	camera.fov = 60.0;
+	camera.loc = (t_vec3f){0.0, 0.0, -6.0};
+	camera.fov = 70.0;
 	camera.iratio = 0.0;
 	camera.dir = (t_vec3f){0.0, 0.0, 0.0};
 	return(camera);
@@ -108,6 +108,20 @@ t_sphere	init_sphere(void)
 	return (sphere);
 }
 
+t_cyl init_cyl(void)
+{
+	t_cyl cyl;
+
+	cyl.cen = (t_vec3f){0.0, 0.0, 0.0};
+	cyl.n = (t_vec3f){0.5, 0.5, 1};
+	cyl.D = 1;
+	cyl.height = 2;
+	cyl.p0 = (t_vec3f){0.0, 0.0, 0.0};
+	cyl.p1 = (t_vec3f){0.0, 0.0, 0.0};
+	cyl.rgb = (t_rgb){0.0, 255, 0.0};
+	return(cyl);
+}
+
 t_shapes init_shapes()
 {
 	t_shapes shapes;
@@ -115,11 +129,14 @@ t_shapes init_shapes()
 	t_plane		plane;
 	t_sphere	sphere;
 	t_square square;
+	t_cyl cyl;
 
+	cyl = init_cyl();
 	sphere = init_sphere();
 	triangle = init_trian();
 	plane = init_plane();
 	square = init_square();
+	//shapes.cyl = cyl;
 	shapes.sphere = sphere;
 	shapes.plane = plane;
 	shapes.trian = triangle;
@@ -135,5 +152,19 @@ t_objects	init_obj(t_shapes *shapes, t_camera *cam)
 	objects.trian = make_trian(&shapes->trian, cam);
 	objects.plane = make_plane(&shapes->plane, cam);
 	objects.square = make_square(&shapes->squ, cam);
+	objects.cyl = intersec_cylinder(&shapes->cyl);
 	return(objects);
+}
+
+t_light		light(int type, t_veс3f *loc, double bright, t_vec3f *color)
+{
+	t_light light;
+
+	if (!(light = malloc(sizeof(t_light))))
+		print_errors(-6);
+	light.type = type;
+	light.loc = loc;
+	light.bright = bright;
+	light.color = color;
+	return (light);
 }

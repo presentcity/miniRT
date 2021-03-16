@@ -11,7 +11,37 @@
 /* ************************************************************************** */
 
 #include "minirt.h"
+/*
 
+P = O + closest_t*D  # вычисление пересечения
+N = P - closest_sphere.center  # вычисление нормали сферы в точке пересечения
+N = N / length(N)
+return closest_sphere.color*ComputeLighting(P, N)
+
+ComputeLighting(pix, N) {
+    i = 0.0
+    while light in scene.Lights {
+        if light.type == ambient
+        {
+		i += light.intensity
+		}
+        else
+        	{
+            if light.type == point
+                L = light.position - P
+            else
+                L = light.direction
+
+            n_dot_l = dot(N, L)
+            if n_dot_l > 0
+                i += light.intensity*n_dot_l/(length(N)*length(L))
+        }
+    }
+    return i
+}
+*/
+
+/*
 t_rgb	color2_coeff(t_rgb a, double n)
 {
 	t_rgb res;
@@ -64,3 +94,4 @@ int			get_color(t_scene *scene, t_ray sent, t_close_obj *close_obj)
 	else
 		return (0);
 }
+*/

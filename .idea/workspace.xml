@@ -19,8 +19,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a49b43c7-b150-4ff4-b56b-44b35bf6cc03" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/test.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug" beforeDir="false" afterPath="$PROJECT_DIR$/debug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug.dSYM/Contents/Resources/DWARF/debug" beforeDir="false" afterPath="$PROJECT_DIR$/debug.dSYM/Contents/Resources/DWARF/debug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inits.c" beforeDir="false" afterPath="$PROJECT_DIR$/inits.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/math_vec.c" beforeDir="false" afterPath="$PROJECT_DIR$/math_vec.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minirt.c" beforeDir="false" afterPath="$PROJECT_DIR$/minirt.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minirt.h" beforeDir="false" afterPath="$PROJECT_DIR$/minirt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scene.c" beforeDir="false" afterPath="$PROJECT_DIR$/scene.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shades.c" beforeDir="false" afterPath="$PROJECT_DIR$/shades.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shapes_working.c" beforeDir="false" afterPath="$PROJECT_DIR$/shapes_working.c" afterDir="false" />
     </list>
@@ -87,7 +94,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Makefile" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Language Defaults" />
   </component>
@@ -152,7 +159,12 @@
       <workItem from="1614165737005" duration="9811000" />
       <workItem from="1614178211051" duration="6047000" />
       <workItem from="1614251031144" duration="5693000" />
-      <workItem from="1614261785202" duration="5370000" />
+      <workItem from="1614261785202" duration="5715000" />
+      <workItem from="1614424967954" duration="4119000" />
+      <workItem from="1614431432581" duration="5248000" />
+      <workItem from="1614774669543" duration="244000" />
+      <workItem from="1615897926649" duration="1661000" />
+      <workItem from="1615901114820" duration="6404000" />
     </task>
     <servers />
   </component>
@@ -163,19 +175,34 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/minirt.c</url>
-          <line>171</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/color.c</url>
           <line>28</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/inits.c</url>
-          <line>96</line>
-          <option name="timeStamp" value="24" />
+          <url>file://$PROJECT_DIR$/minirt.c</url>
+          <line>95</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/shapes_working.c</url>
+          <line>15</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/minirt.c</url>
+          <line>184</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/test.c</url>
+          <line>41</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/minirt.c</url>
+          <line>181</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
